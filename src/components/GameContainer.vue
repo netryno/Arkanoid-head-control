@@ -36,7 +36,7 @@
 
   .fge-version-label{
     font-size: 10px;
-    color: #ffffff;
+    color: #797878;
     text-align: right;
     background: #000000;
     display: block;
