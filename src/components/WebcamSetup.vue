@@ -5,7 +5,7 @@
       autoplay
       muted
       playsinline
-      width="640"
+      width="600"
       height="480"
     />
     <p v-if="!ready">Detectando cámara…</p>

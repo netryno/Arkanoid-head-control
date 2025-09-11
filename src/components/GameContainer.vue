@@ -14,7 +14,7 @@
     <UiPanel :score="score" :level="level" :lives="lives" />
 
     <!-- 3. canvas -->
-    <canvas ref="canvas" class="game-canvas" width="800" height="880" />
+    <canvas ref="canvas" class="game-canvas" width="600" height="880" />
 
     <!-- 4. overlays -->
     <div v-if="!running && !ended" class="overlay">
@@ -32,16 +32,22 @@
 
 <style scoped>
 .gameover{
-      color: #aa3232;
-    font-weight: bold;
+  background: rgba(0, 0, 0, 0.55);   /* fondo semitransparente */
+  color: rgb(255, 255, 255);
+  font-family: monospace;
+  font-size: 1.1rem;
+  z-index: 10;                       /* <-- por encima del video */
+  border-radius: 4px;
+  text-shadow: 1px 1px 5px white;
+  text-align: center;
 }
 .game {
   position: relative;
-  width: 800px;
+  width: 600px;
   height: 840px;
   margin: auto;
   overflow: hidden;
-  border: 1px solid #c1bf1e;
+  border: 1px solid #ffffff;
 }
 .bg-video {
   position: absolute;
@@ -56,7 +62,7 @@
   position: relative;
   z-index: 1;
   display: block;
-  width: 800px;
+  width: 600px;
   height: 840px;
   pointer-events: none;
 }
@@ -131,17 +137,22 @@ const game   = useGameEngine(images)
 onMounted(async () => {
   ctx = canvas.value.getContext('2d')
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src })
-  images.block1 = await load('/assets/images/bloque150z.jpg')
-  images.block2 = await load('/assets/images/bloque150eco.png')
-  images.block3 = await load('/assets/images/bloque150c.png')
-  images.ball   = await load('/assets/images/balon-200.png')
-  images.logo   = await load('/assets/images/paleton.png')
+  images.block1 = await load('/assets/images/elements/elements_game-01.png') //base
+
+  images.block1_1 = await load('/assets/images/elements/elements_game-06.png')   // variante 1
+  images.block1_2 = await load('/assets/images/elements/elements_game-07.png')   // variante 2
+  images.block1_3 = await load('/assets/images/elements/elements_game-01.png')   // variante 2
+
+  images.block2 = await load('/assets/images/elements/elements_game-02.png')
+  images.block3 = await load('/assets/images/elements/elements_game-04.png')
+  images.ball   = await load('/assets/images/elements/elements_game-11.png') //balon
+  images.logo   = await load('/assets/images/elements/elements_game-10.png') //paleta
   draw()
 })
 
 function draw () {
   if (!ctx) return
-  ctx.clearRect(0, 0, 800, 880)
+  ctx.clearRect(0, 0, 600, 880)
   game.blocks.value.forEach(b => b.draw(ctx))
   game.powerUps.value.forEach(p => p.draw(ctx))
   game.paddle.draw(ctx, images.logo)

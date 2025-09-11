@@ -4,7 +4,7 @@ import { Ball } from '../entities/Ball.js'
 import { Block, BlockType } from '../entities/Block.js'
 import { PowerUp, PowerType } from '../entities/PowerUp.js'
 import { circleRectCollision, circleCircleCollision } from '../utils/collisions.js'
-import { CANVAS_W, CANVAS_H, MAX_LEVEL, LIVES } from '../utils/constants.js'
+import { CANVAS_W, CANVAS_H, MAX_LEVEL, LIVES, BLOCK_H, BLOCK_W } from '../utils/constants.js'
 
 export function useGameEngine(images) {
   const score = ref(0)
@@ -20,18 +20,54 @@ export function useGameEngine(images) {
 
   let raf = null
 
-  function buildLevel(lvl) {
+  function buildLevel_old(lvl) {
     blocks.value = []
-    const cols = 7
+    const cols = 6                       // <-- ajusta columnas
     const rows = 3 + Math.min(lvl, 3)
-    const span = CANVAS_W / (cols + 1)
+    const paddingX = 10                  // <-- margen izquierdo/derecho
+    const paddingY = 100                  // <-- margen superior
+    const availableW = CANVAS_W - paddingX * 2
+    const span = availableW / cols       // espacio por columna
+  
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const x = (c + 1) * span
-        const y = 60 + r * 60
+        const x = paddingX + c * span + span / 2 - BLOCK_W / 2
+        const y = paddingY + r * (BLOCK_H + 12)   // 12 = separación vertical
         const rnd = Math.random()
         const type = rnd < 0.7 ? BlockType.NORMAL : rnd < 0.9 ? BlockType.STRONG : BlockType.POWER
         const img = type === BlockType.STRONG ? images.block2 : type === BlockType.POWER ? images.block3 : images.block1
+        blocks.value.push(new Block(x, y, type, img))
+      }
+    }
+  }
+  function buildLevel(lvl) {
+    blocks.value = []
+    const cols = 6
+    const rows = 2 + Math.min(lvl, 3)
+    const paddingX = 10
+    const paddingY = 100
+    const availableW = CANVAS_W - paddingX * 2
+    const span = availableW / cols
+  
+    // ---- sprites para bloques normales ----
+    const baseVariants = [images.block1, images.block1_1, images.block1_2, images.block1_3]
+  
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = paddingX + c * span + span / 2 - BLOCK_W / 2
+        const y = paddingY + r * (BLOCK_H + 12)
+        const rnd = Math.random()
+        const type = rnd < 0.7 ? BlockType.NORMAL : rnd < 0.9 ? BlockType.STRONG : BlockType.POWER
+  
+        let img
+        if (type === BlockType.STRONG) {
+          img = images.block2
+        } else if (type === BlockType.POWER) {
+          img = images.block3
+        } else {
+          img = baseVariants[Math.floor(Math.random() * baseVariants.length)]
+        }
+  
         blocks.value.push(new Block(x, y, type, img))
       }
     }

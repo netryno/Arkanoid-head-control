@@ -30,7 +30,7 @@ export function useMediaPipe(videoEl, onFaceMove) {
       videoEl.srcObject = stream
       const camera = new Camera(videoEl, {
         onFrame: async () => await faceMesh.send({ image: videoEl }),
-        width: 640,
+        width: 600,
         height: 480
       })
       return camera.start()
