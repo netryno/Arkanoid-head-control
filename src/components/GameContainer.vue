@@ -158,7 +158,7 @@ onMounted(async () => {
   images.block2 = await load('/assets/images/elements/elements_game-02.png')
   images.block3 = await load('/assets/images/elements/elements_game-04.png')
   images.ball   = await load('/assets/images/elements/elements_game-11.png') //balon
-  images.logo   = await load('/assets/images/elements/elements_game-10.png') //paleta
+  images.logo   = await load('/assets/images/elements/elements roma-10.png') //paleta
   draw()
 })
 
