@@ -27,10 +27,22 @@
 
     <!-- 5. pantalla de permisos (hasta que esté lista) -->
     <WebcamSetup v-if="!camReady" @ready="onCamReady" />
+
+    <p  class="fge-version-label">Copyright ©   Ministerio Público de Bolivia</p>
   </div>
 </template>
 
 <style scoped>
+
+  .fge-version-label{
+    font-size: 10px;
+    color: #ffffff;
+    text-align: right;
+    background: #000000;
+    display: block;
+    position: fixed;
+  }
+
 .gameover{
   background: rgba(0, 0, 0, 0.55);   /* fondo semitransparente */
   color: rgb(255, 255, 255);
