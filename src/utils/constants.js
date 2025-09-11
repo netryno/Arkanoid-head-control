@@ -1,0 +1,10 @@
+export const CANVAS_W = 800
+export const CANVAS_H = 890
+export const PADDLE_H = 35
+export const PADDLE_W = 200
+export const BALL_RAD = 25
+export const BLOCK_RAD = 22
+export const MAX_LEVEL = 5
+export const LIVES = 3
+export const BLOCK_W = 90   // ancho bloque
+export const BLOCK_H = 40   // alto bloque

@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@mediapipe/camera_utils": "^0.3",
+    "@mediapipe/face_mesh": "^0.4",
+    "vue": "^3.4.0"
+  }
+}
