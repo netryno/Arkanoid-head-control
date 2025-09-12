@@ -146,11 +146,22 @@ let ctx
 const images = {}
 const game   = useGameEngine(images)
 
+// importa todas las imágenes como URL
+import block1 from '/assets/images/elements/elements_game-01.png?url'
+import block1_1 from '/assets/images/elements/elements_game-06.png?url'
+import block1_2 from '/assets/images/elements/elements_game-07.png?url'
+import block1_3 from '/assets/images/elements/elements_game-01.png?url'
+import block2 from '/assets/images/elements/elements_game-02.png?url'
+import block3 from '/assets/images/elements/elements_game-04.png?url'
+import ball from '/assets/images/elements/elements_game-11.png?url'
+import logo from '/assets/images/elements/elements roma-10.png?url'
+
 onMounted(async () => {
   ctx = canvas.value.getContext('2d')
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src })
-  images.block1 = await load('/assets/images/elements/elements_game-01.png') //base
 
+  /*
+  images.block1 = await load('/assets/images/elements/elements_game-01.png') //base
   images.block1_1 = await load('/assets/images/elements/elements_game-06.png')   // variante 1
   images.block1_2 = await load('/assets/images/elements/elements_game-07.png')   // variante 2
   images.block1_3 = await load('/assets/images/elements/elements_game-01.png')   // variante 2
@@ -159,6 +170,19 @@ onMounted(async () => {
   images.block3 = await load('/assets/images/elements/elements_game-04.png')
   images.ball   = await load('/assets/images/elements/elements_game-11.png') //balon
   images.logo   = await load('/assets/images/elements/elements roma-10.png') //paleta
+  */
+
+  images.block1   = await load(block1)
+  images.block1_1 = await load(block1_1)
+  images.block1_2 = await load(block1_2)
+  images.block1_3 = await load(block1_3)
+  images.block2   = await load(block2)
+  images.block3   = await load(block3)
+  images.ball     = await load(ball)
+  images.logo     = await load(logo)
+
+
+
   draw()
 })
 

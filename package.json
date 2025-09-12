@@ -9,8 +9,8 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "@mediapipe/camera_utils": "^0.3",
-    "@mediapipe/face_mesh": "^0.4",
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/face_mesh": "^0.4.1633559619",
     "vue": "^3.4.0"
   }
 }
