@@ -178,14 +178,13 @@ function draw (ctx) {
 /* ----------  cámara  ---------- */
 async function initCamera () {
   try {
-    await useMediaPipe(camVideo.value, x => {
+    const { ready } = await useMediaPipe(camVideo.value, x => {
       const inverted = 1 - x
       game.onFaceMove(inverted)
     })
-    camReady.value = true
+    camReady.value = ready.value
     camErrorDismissed.value = false
   } catch (err) {
-    console.error(err)
     camErrorMsg.value = err.name === 'NotAllowedError'
       ? 'Por favor permite el uso de la cámara.'
       : 'No se pudo acceder a la cámara.'
