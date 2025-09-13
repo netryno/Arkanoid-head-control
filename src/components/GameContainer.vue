@@ -16,39 +16,45 @@
     <!-- 3. canvas -->
     <canvas ref="canvas" class="game-canvas" width="600" height="880" />
 
-    <!-- 4. overlays -->
-    <div v-if="!running && !ended" class="overlay">
+    <!-- 4. bloqueo hasta que la cámara esté OK -->
+    <CameraError
+      v-if="!camReady && !camErrorDismissed"
+      :mensaje="camErrorMsg"
+      @reintentar="reintentarCam"
+    />
+
+    <!-- 5. overlays normales (solo si cámara lista) -->
+    <div v-if="camReady && !running && !ended" class="overlay">
       <button class="button default" @click="start">Jugar</button>
     </div>
-    <div v-if="ended" class="overlay">
+    <div v-if="camReady && ended" class="overlay">
       <h2 class="gameover">{{ lives ? '¡Victoria!' : 'Game Over' }}</h2>
       <button class="button default" @click="reload">Reiniciar</button>
     </div>
-    <!-- 5. pantalla de permisos (hasta que esté lista) -->
-    <WebcamSetup v-if="!camReady" @ready="onCamReady" />
 
-    <p  class="fge-version-label">Copyright ©   Ministerio Público de Bolivia</p>
+    <!-- 6. confeti -->
     <Confetti ref="confettiRef" />
+
+    <!-- 7. créditos -->
+    <p class="fge-version-label">Copyright © Ministerio Público de Bolivia</p>
   </div>
 </template>
 
 <style scoped>
-
-  .fge-version-label{
-    font-size: 10px;
-    color: #797878;
-    text-align: right;
-    background: #000000;
-    display: block;
-    position: fixed;
-  }
-
-.gameover{
-  background: rgba(0, 0, 0, 0.55);   /* fondo semitransparente */
-  color: rgb(255, 255, 255);
+.fge-version-label {
+  font-size: 10px;
+  color: #797878;
+  text-align: right;
+  background: #000000;
+  display: block;
+  position: fixed;
+}
+.gameover {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
   font-family: monospace;
   font-size: 1.1rem;
-  z-index: 10;                       /* <-- por encima del video */
+  z-index: 10;
   border-radius: 4px;
   text-shadow: 1px 1px 5px white;
   text-align: center;
@@ -56,7 +62,7 @@
 .game {
   position: relative;
   width: 600px;
-  height: 840px;
+  height: 880px;
   margin: auto;
   overflow: hidden;
   border: 1px solid #ffffff;
@@ -75,7 +81,7 @@
   z-index: 1;
   display: block;
   width: 600px;
-  height: 840px;
+  height: 880px;
   pointer-events: none;
 }
 .overlay {
@@ -92,8 +98,6 @@ button {
   font-size: 1.2rem;
   cursor: pointer;
 }
-
-
 .button {
   display: inline-block;
   padding: 10px 20px;
@@ -104,52 +108,36 @@ button {
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
 }
-
 .default {
   border: 2px solid #3498db;
   color: #3498db;
   background-color: #fff;
 }
-
 .default:hover {
   background-color: #3498db;
   color: #fff;
 }
-
-.primary {
-  border: 2px solid #2ecc71;
-  color: #2ecc71;
-  background-color: #fff;
-}
-
-.primary:hover {
-  background-color: #2ecc71;
-  color: #fff;
-}
-
-
-
 </style>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import WebcamSetup from './WebcamSetup.vue'
+import CameraError from './CameraError.vue'
 import UiPanel from './UiPanel.vue'
+import Confetti from './Confetti.vue'
 import { useGameEngine } from '../composables/useGameEngine.js'
 import { useMediaPipe } from '../composables/useMediaPipe.js'
-
-import Confetti from './Confetti.vue'
-const confettiRef = ref(null)
 
 const canvas   = ref(null)
 const camVideo = ref(null)
 const camReady = ref(false)
+const camErrorDismissed = ref(false)
+const camErrorMsg = ref('')
 
-let ctx
+const confettiRef = ref(null)
 const images = {}
-const game   = useGameEngine(images)
+const game = useGameEngine(images)
 
-// importa todas las imágenes como URL
+// imágenes con URL resueltas por Vite
 import block1 from '/assets/images/elements/elements_game-01.png?url'
 import block1_1 from '/assets/images/elements/elements_game-06.png?url'
 import block1_2 from '/assets/images/elements/elements_game-07.png?url'
@@ -160,20 +148,8 @@ import ball from '/assets/images/elements/elements_game-11.png?url'
 import logo from '/assets/images/elements/elements roma-10.png?url'
 
 onMounted(async () => {
-  ctx = canvas.value.getContext('2d')
+  const ctx = canvas.value.getContext('2d')
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src })
-
-  /*
-  images.block1 = await load('/assets/images/elements/elements_game-01.png') //base
-  images.block1_1 = await load('/assets/images/elements/elements_game-06.png')   // variante 1
-  images.block1_2 = await load('/assets/images/elements/elements_game-07.png')   // variante 2
-  images.block1_3 = await load('/assets/images/elements/elements_game-01.png')   // variante 2
-
-  images.block2 = await load('/assets/images/elements/elements_game-02.png')
-  images.block3 = await load('/assets/images/elements/elements_game-04.png')
-  images.ball   = await load('/assets/images/elements/elements_game-11.png') //balon
-  images.logo   = await load('/assets/images/elements/elements roma-10.png') //paleta
-  */
 
   images.block1   = await load(block1)
   images.block1_1 = await load(block1_1)
@@ -184,37 +160,42 @@ onMounted(async () => {
   images.ball     = await load(ball)
   images.logo     = await load(logo)
 
-  draw()
+  draw(ctx)
+  initCamera()
 })
 
-function draw () {
+function draw (ctx) {
   if (!ctx) return
   ctx.clearRect(0, 0, 600, 880)
   game.blocks.value.forEach(b => b.draw(ctx))
   game.powerUps.value.forEach(p => p.draw(ctx))
   game.paddle.draw(ctx, images.logo)
   game.ball.draw(ctx, images.ball)
-  if (game.running.value || !game.ended.value) requestAnimationFrame(draw)
-
+  if (game.running.value || !game.ended.value) requestAnimationFrame(() => draw(ctx))
   if (game.ended.value && game.lives.value) confettiRef.value.lanzar()
 }
 
-/*
-function onCamReady () {
-  // conecta la cámara al video de fondo
-  useMediaPipe(camVideo.value, (x) => game.onFaceMove(x))
-  camReady.value = true
-}
-*/
-function onCamReady () {
-  useMediaPipe(camVideo.value, (x) => {
-    // invierte dirección: 0 → 1, 1 → 0
-    const inverted = 1 - x
-    game.onFaceMove(inverted)
-  })
-  camReady.value = true
+/* ----------  cámara  ---------- */
+async function initCamera () {
+  try {
+    await useMediaPipe(camVideo.value, x => {
+      const inverted = 1 - x
+      game.onFaceMove(inverted)
+    })
+    camReady.value = true
+    camErrorDismissed.value = false
+  } catch (err) {
+    console.error(err)
+    camErrorMsg.value = err.name === 'NotAllowedError'
+      ? 'Por favor permite el uso de la cámara.'
+      : 'No se pudo acceder a la cámara.'
+    camErrorDismissed.value = false
+  }
 }
 
+function reintentarCam () {
+  initCamera()
+}
 
 function reload () {
   window.location.reload()

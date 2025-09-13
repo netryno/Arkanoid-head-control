@@ -11,6 +11,10 @@
 
 <script setup>
 import GameContainer from './components/GameContainer.vue'
+const appName = import.meta.env.VITE_APP_NAME;
+console.log("Modo:", import.meta.env.MODE);
+console.log("Nombre de la app:", appName);
+
 </script>
 <style lang="css">
 .cabezera{

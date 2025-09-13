@@ -8,7 +8,8 @@
       width="600"
       height="480"
     />
-    <p v-if="!ready">Detectando cámara…</p>
+    <p class="detectcamera">Detectando cámara…</p>
+    <p class="detectcamera" v-if="!ready">Detectando cámara…</p>
     <p v-else>Mueve la cabeza para calibrar</p>
   </div>
 </template>
@@ -35,5 +36,9 @@ onMounted(() => {
 video {
   transform: scaleX(-1);
   border: 2px solid #0f0;
+}
+.detectcamera{
+  z-index: 10;
+  background-color: red;
 }
 </style>

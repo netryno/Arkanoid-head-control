@@ -43,7 +43,7 @@ export function useGameEngine(images) {
   function buildLevel(lvl) {
     blocks.value = []
     const cols = 6
-    const rows = 1 + Math.min(lvl, 3) // numero de filas con el que arranga
+    const rows = 0 + Math.min(lvl, 3) // numero de filas con el que arranga
     const paddingX = 10
     const paddingY = 100
     const availableW = CANVAS_W - paddingX * 2
