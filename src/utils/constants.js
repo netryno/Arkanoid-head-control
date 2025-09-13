@@ -1,7 +1,7 @@
 export const CANVAS_W = 600
 export const CANVAS_H = 890
 export const PADDLE_H = 20 //paleta
-export const PADDLE_W = 180 //paleta
+export const PADDLE_W = 170 //paleta
 export const BALL_RAD = 30
 export const BLOCK_RAD = 20
 export const MAX_LEVEL = 3

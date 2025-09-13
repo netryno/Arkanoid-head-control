@@ -24,11 +24,11 @@
       <h2 class="gameover">{{ lives ? '¡Victoria!' : 'Game Over' }}</h2>
       <button class="button default" @click="reload">Reiniciar</button>
     </div>
-
     <!-- 5. pantalla de permisos (hasta que esté lista) -->
     <WebcamSetup v-if="!camReady" @ready="onCamReady" />
 
     <p  class="fge-version-label">Copyright ©   Ministerio Público de Bolivia</p>
+    <Confetti ref="confettiRef" />
   </div>
 </template>
 
@@ -85,7 +85,7 @@
   display: grid;
   place-content: center;
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #c1bf1e;
+  border: 1px solid #fffd9d;
 }
 button {
   padding: 0.8rem 2rem;
@@ -138,6 +138,9 @@ import UiPanel from './UiPanel.vue'
 import { useGameEngine } from '../composables/useGameEngine.js'
 import { useMediaPipe } from '../composables/useMediaPipe.js'
 
+import Confetti from './Confetti.vue'
+const confettiRef = ref(null)
+
 const canvas   = ref(null)
 const camVideo = ref(null)
 const camReady = ref(false)
@@ -181,8 +184,6 @@ onMounted(async () => {
   images.ball     = await load(ball)
   images.logo     = await load(logo)
 
-
-
   draw()
 })
 
@@ -194,6 +195,8 @@ function draw () {
   game.paddle.draw(ctx, images.logo)
   game.ball.draw(ctx, images.ball)
   if (game.running.value || !game.ended.value) requestAnimationFrame(draw)
+
+  if (game.ended.value && game.lives.value) confettiRef.value.lanzar()
 }
 
 /*

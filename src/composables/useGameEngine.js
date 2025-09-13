@@ -43,7 +43,7 @@ export function useGameEngine(images) {
   function buildLevel(lvl) {
     blocks.value = []
     const cols = 6
-    const rows = 2 + Math.min(lvl, 3)
+    const rows = 1 + Math.min(lvl, 3) // numero de filas con el que arranga
     const paddingX = 10
     const paddingY = 100
     const availableW = CANVAS_W - paddingX * 2
@@ -79,8 +79,8 @@ export function useGameEngine(images) {
   }
   */
   function resetBallPaddle() {
-    const baseSpeed = 2                       // <-- más lento que antes
-    const speed = baseSpeed + (level.value - 1) * 0.8   // +0.8 por nivel
+    const baseSpeed = 3                       // <-- más lento que antes si es mas bajo
+    const speed = baseSpeed + (level.value - 1) * 1   // +0.8 por nivel
     Object.assign(ball, new Ball(CANVAS_W / 2, CANVAS_H / 2, speed))
     Object.assign(paddle, new Paddle())
   }

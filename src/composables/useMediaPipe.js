@@ -15,7 +15,10 @@ export function useMediaPipe(videoEl, onFaceMove) {
       maxNumFaces: 1,
       refineLandmarks: false,
       minDetectionConfidence: 0.7,
-      minTrackingConfidence: 0.7
+      minTrackingConfidence: 0.7,
+      // Configuraciones adicionales para optimizar
+      selfieMode: false,
+      enableFaceGeometry: false
     })
 
     faceMesh.onResults((results) => {
@@ -29,10 +32,21 @@ export function useMediaPipe(videoEl, onFaceMove) {
     videoEl.srcObject = stream
 
     const camera = new Camera(videoEl, {
-      onFrame: async () => await faceMesh.send({ image: videoEl }),
+      onFrame: async () => {
+        try {
+          await faceMesh.send({ image: videoEl })
+        } catch (error) {
+          // Manejar errores silenciosamente si no son críticos
+          if (!error.message.includes('WebGL')) {
+            console.error('MediaPipe error:', error)
+          }
+        }
+      },
       width: 600,
       height: 480
     })
+
+
     await camera.start()
     ready.value = true
   }
