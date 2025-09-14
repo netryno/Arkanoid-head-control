@@ -47,7 +47,6 @@ export async function useMediaPipe(videoEl, onFaceMove) {
       if (results.multiFaceLandmarks?.length) {
         //const nose = results.multiFaceLandmarks[0][1]
         //onFaceMove(nose.x)
-
         const nose = results.multiFaceLandmarks[0][1]
         const landmarks = results.multiFaceLandmarks[0]   // <-- todos los puntos
         onFaceMove(nose.x, landmarks)   

@@ -4,7 +4,13 @@ import { Ball } from '../entities/Ball.js'
 import { Block, BlockType } from '../entities/Block.js'
 import { PowerUp, PowerType } from '../entities/PowerUp.js'
 import { circleRectCollision, circleCircleCollision } from '../utils/collisions.js'
-import { CANVAS_W, CANVAS_H, MAX_LEVEL, LIVES, BLOCK_H, BLOCK_W } from '../utils/constants.js'
+import { CANVAS_W, CANVAS_H, MAX_LEVEL, LIVES, BLOCK_H, BLOCK_W, VELOCIDAD_X_NIVEL, VELOCIDAD_BASE } from '../utils/constants.js'
+
+// ⬅️ LECTURA DE URL con fallback a constants.js
+const urlParams = new URLSearchParams(window.location.search)
+const maxLevelUrl = parseInt(urlParams.get('maxnivel')) || MAX_LEVEL
+const velBaseUrl  = parseInt(urlParams.get('velbase'))  || VELOCIDAD_BASE
+
 
 export function useGameEngine(images) {
   const score = ref(0)
@@ -79,8 +85,8 @@ export function useGameEngine(images) {
   }
   */
   function resetBallPaddle() {
-    const baseSpeed = 2                       // <-- más lento que antes si es mas bajo
-    const speed = baseSpeed + (level.value - 1) * 1.1   // +0.8 por nivel
+    const baseSpeed = velBaseUrl                     // <-- más lento que antes si es mas bajo
+    const speed = baseSpeed + (level.value - 1) * VELOCIDAD_X_NIVEL   // +0.8 por nivel
     Object.assign(ball, new Ball(CANVAS_W / 2, CANVAS_H / 2, speed))
     Object.assign(paddle, new Paddle())
   }
@@ -160,7 +166,7 @@ export function useGameEngine(images) {
 
     // nivel completado
     if (blocks.value.length === 0) {
-      if (level.value >= MAX_LEVEL) {
+      if (level.value >= maxLevelUrl) {
         ended.value = true
         running.value = false
         return

@@ -8,6 +8,8 @@
       autoplay
       muted
       playsinline
+      @loadedmetadata="onVideoResize"
+      @resize="onVideoResize"
     />
 
     <!-- líneas desde la boca hasta la paleta -->
@@ -16,6 +18,8 @@
       :face-landmarks="faceLandmarks"
       :paddle-x="game.paddle.x"
       :paddle-w="game.paddle.w"
+      :video-w="videoW"
+      :video-h="videoH"
     />
 
     <!-- 2. UI -->
@@ -44,7 +48,8 @@
     <Confetti ref="confettiRef" />
 
     <!-- 7. créditos -->
-    <p class="fge-version-label">Copyright © Ministerio Público de Bolivia</p>
+    <p class="fge-version-label"></p>
+    <p class="fge-version-label">Max Nivel: {{ maxLevelUrl }} Vel. Base: {{ velBaseUrl }} &nbsp;&nbsp;  maxnivel=2&velbase=2</p>
   </div>
 </template>
 
@@ -158,6 +163,23 @@ import logo from '/assets/images/elements/elements roma-10.png?url'
 
 import MouthLines from './MouthLines.vue'
 
+
+
+const videoW = ref(700)
+const videoH = ref(880)
+
+import {  MAX_LEVEL, VELOCIDAD_BASE } from '../utils/constants.js'
+const urlParams   = new URLSearchParams(window.location.search)
+const maxLevelUrl = parseInt(urlParams.get('maxnivel')) || MAX_LEVEL
+const velBaseUrl  = parseInt(urlParams.get('velbase'))  || VELOCIDAD_BASE
+
+
+function onVideoResize () {
+  if (!camVideo.value) return
+  videoW.value = camVideo.value.videoWidth || camVideo.value.clientWidth
+  videoH.value = camVideo.value.videoHeight || camVideo.value.clientHeight
+}
+
 // almacenamos los landmarks que llegan de MediaPipe
 const faceLandmarks = ref(null)
 
@@ -181,7 +203,7 @@ onMounted(async () => {
 
 function draw (ctx) {
   if (!ctx) return
-  ctx.clearRect(0, 0, 600, 880)
+  ctx.clearRect(0, 0, 700, 880)
   game.blocks.value.forEach(b => b.draw(ctx))
   game.powerUps.value.forEach(p => p.draw(ctx))
   game.paddle.draw(ctx, images.logo)

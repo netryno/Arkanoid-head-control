@@ -8,3 +8,5 @@ export const MAX_LEVEL = 2
 export const LIVES = 3
 export const BLOCK_W = 90   // ancho bloque
 export const BLOCK_H = 53   // alto bloque
+export const VELOCIDAD_X_NIVEL = 1
+export const VELOCIDAD_BASE = 2
