@@ -2,7 +2,7 @@
     <div class="cabezera">
       <div class="titulos"> 
           <h2>Arkanoid - Ministerio Público</h2>
-          <h4>Superar nivel 3 = Souvenir</h4>
+          <h4>Superar nivel 2 = Souvenir</h4>
       </div>
       <img class="logo" src="/public/assets/images/elements/fiscalia.png"></img>
     </div>

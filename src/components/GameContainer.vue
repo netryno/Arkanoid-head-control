@@ -10,6 +10,14 @@
       playsinline
     />
 
+    <!-- líneas desde la boca hasta la paleta -->
+    <MouthLines
+      v-if="camReady && faceLandmarks"
+      :face-landmarks="faceLandmarks"
+      :paddle-x="game.paddle.x"
+      :paddle-w="game.paddle.w"
+    />
+
     <!-- 2. UI -->
     <UiPanel :score="score" :level="level" :lives="lives" />
 
@@ -147,6 +155,13 @@ import block3 from '/assets/images/elements/elements_game-04.png?url'
 import ball from '/assets/images/elements/elements_game-11.png?url'
 import logo from '/assets/images/elements/elements roma-10.png?url'
 
+
+import MouthLines from './MouthLines.vue'
+
+// almacenamos los landmarks que llegan de MediaPipe
+const faceLandmarks = ref(null)
+
+
 onMounted(async () => {
   const ctx = canvas.value.getContext('2d')
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src })
@@ -178,10 +193,11 @@ function draw (ctx) {
 /* ----------  cámara  ---------- */
 async function initCamera () {
   try {
-    const { ready } = await useMediaPipe(camVideo.value, x => {
+    const { ready } = await useMediaPipe(camVideo.value,  (x, landmarks) => {
       const inverted = 1 - x
       game.onFaceMove(inverted)
-    })
+      faceLandmarks.value = landmarks
+    })    
     camReady.value = ready.value
     camErrorDismissed.value = false
   } catch (err) {

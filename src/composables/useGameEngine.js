@@ -79,8 +79,8 @@ export function useGameEngine(images) {
   }
   */
   function resetBallPaddle() {
-    const baseSpeed = 3                       // <-- más lento que antes si es mas bajo
-    const speed = baseSpeed + (level.value - 1) * 1.2   // +0.8 por nivel
+    const baseSpeed = 2                       // <-- más lento que antes si es mas bajo
+    const speed = baseSpeed + (level.value - 1) * 1.1   // +0.8 por nivel
     Object.assign(ball, new Ball(CANVAS_W / 2, CANVAS_H / 2, speed))
     Object.assign(paddle, new Paddle())
   }
